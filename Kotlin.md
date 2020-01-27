@@ -68,9 +68,16 @@
 
 #### Dispatchers.Unconfined
 
-> 运行在主线程
-
 #### Dispatchers.Default
 
-> 获取默认调度器
+#### Dispatchers.IO
 
+#### Dispatchers.Main
+
+### [ThrealLocal]([https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E6%95%B0%E6%8D%AE](https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#线程局部数据))
+
+> 每个线程/协程只能从中取到自己设置的值，并且挂起后该设置失效
+
+### [Kotlin Debug](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
+
+> testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.3.3'
