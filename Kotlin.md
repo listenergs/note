@@ -32,13 +32,13 @@
 
 > 功能同withTimeout，超时结果不在是抛出异常，而是返回 null 结果
 
-### 声明一个作用域
+### CoroutineScope 类
 
 ####  coroutineScope
 
 > 在协程内创建一个作用域，在作用域内的代码块及子协程执行完之前不会结束
 
-### Job
+### Job 类
 
 ##### cancel
 
@@ -56,7 +56,7 @@
 >
 > ​	通常使用 `try{...} finally{...}` 或者 Kotlin 中的 use 函数来处理取消时抛出的异常，在 finally 中作后续处理
 
-### Deferred
+### Deferred 类
 
 > 继承与Job
 
@@ -64,20 +64,37 @@
 
 > 阻塞等待Job执行完毕，返回执行结果
 
-### CoroutineDispatcher
+### CoroutineDispatcher 类
 
 #### Dispatchers.Unconfined
 
+> 首次挂起前在当前线程执行，恢复后由被调用的挂起函数决定
+
 #### Dispatchers.Default
+
+> 使用后台共享线程池，适用于 CPU 密集型任务
 
 #### Dispatchers.IO
 
+> 使用按需创建的线程的共享线程池，适用于 IO 密集型任务
+
 #### Dispatchers.Main
 
-### [ThrealLocal]([https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E6%95%B0%E6%8D%AE](https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#线程局部数据))
+> 在 UI 线程执行
+
+### [ThrealLocal 类]([https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E6%95%B0%E6%8D%AE](https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#线程局部数据))
 
 > 每个线程/协程只能从中取到自己设置的值，并且挂起后该设置失效
+
+### Flow 类
+
+#### flow、asFlow、flowOf
+
+> 构建方法
+
+map、filter、transform、take
 
 ### [Kotlin Debug](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
 
 > testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.3.3'
+
