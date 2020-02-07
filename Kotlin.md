@@ -1,100 +1,109 @@
-# Kotlin Note
+# Coroutine （协程）
 
-## Coroutine （协程）
+## 常用方法
 
-### 协程相关方法
+### runBlocking
 
-#### runBlocking
+    可以在任意位置开启一个协程，会阻塞当前线程，生命周期小于等于所在线程 。
 
-> 可以在任意位置开启一个协程，会阻塞当前线程，生命周期小于等于所在线程
+### launch
 
-#### launch
+    开启一个子协程，生命周期小于等于父协程，返回一个 Job 。
 
-> 开启一个子协程，生命周期小于等于父协程，返回一个Job
+### async
 
-#### GlobalScope.launch
+    开启一个子协程，生命周期小于等于父协程，返回一个 Deferred 。
 
->利用GlobalScope在任意位置开启一个协程，生命周期小于等于当前应用，返回一个Job
+### suspendCoroutine
 
-#### async
+    将当前执行流挂起，待执行完毕后调用 resume 方法恢复。
 
-> 开启一个子协程，生命周期小于等于父协程，返回一个Deferred。
+### resume
 
-#### GlobalScope.async
+    恢复挂起之前的执行流。
 
-> 利用GlobalScope在任意位置开启一个协程，生命周期小于等于当前应用，返回一个Deferred。
+### withContext
 
-#### withTimeout
+    在指定线程中执行。
 
-> 在设置的超时时间内执行一个协程，执行完毕，返回需要的数据，超时则抛出异常 TimeoutCancellationException
+### withTimeout
 
-#### withTimeoutOrNull
+    在设置的超时时间内执行一个协程，执行完毕，返回需要的数据，超时则抛出异常 TimeoutCancellationException 。
 
-> 功能同withTimeout，超时结果不在是抛出异常，而是返回 null 结果
+### withTimeoutOrNull
 
-### CoroutineScope 类
+    功能同 withTimeout ，超时结果不在是抛出异常，而是返回 null 结果
 
-####  coroutineScope
+## Continuation
 
-> 在协程内创建一个作用域，在作用域内的代码块及子协程执行完之前不会结束
+    执行流，两个 suspension point 之间的代码成为泡影一个 Continuation 。
 
-### Job 类
+## CoroutineScope
 
-##### cancel
+    协程作用域，一般使用方法是继承与 CoroutineScope ，并使用默认的调度器实现，例如： `class BaseActivity :CoroutineScope by CoroutineScope(Dispatchers.Default)` 。
 
-> 通过Job尝试取消一个协程，也可以说是取消一个协程对应的Job，因为通过launch启动一个协程时返回的是一个Job；cancel无法直接取消正在执行中的代码，需要通过 isActive 显示的检查取消状态；对于 kotlinx.coroutines 中的挂起函数，都是可以被取消的，并在取消时抛出 CancellationException ，因此也可以在代码中定期调用挂起函数检测取消状态，如 yield 。
+### coroutineScope
 
-#### join
+    在协程内创建一个作用域，在作用域内的代码块及子协程执行完之前不会结束。
 
-> 等待协程结束，也可以说是等待Job结束，因为通过launch启动一个协程时返回的是一个Job
+## CoroutineDispatcher
 
-#### cancelAndJoin
+### Dispatchers.Unconfined
 
-> 等于Job.cancel+Job.join
+    首次挂起前在当前线程执行，恢复后由被调用的挂起函数决定。
 
-> 备注：
->
-> ​	通常使用 `try{...} finally{...}` 或者 Kotlin 中的 use 函数来处理取消时抛出的异常，在 finally 中作后续处理
+### Dispatchers.Default
 
-### Deferred 类
+    使用后台共享线程池，适用于 CPU 密集型任务。
 
-> 继承与Job
+### Dispatchers.IO
 
-#### await
+    使用按需创建的线程的共享线程池，适用于 IO 密集型任务。
 
-> 阻塞等待Job执行完毕，返回执行结果
+### Dispatchers.Main
 
-### CoroutineDispatcher 类
+    在 UI 线程执行。
 
-#### Dispatchers.Unconfined
+## Job
 
-> 首次挂起前在当前线程执行，恢复后由被调用的挂起函数决定
+    任务
 
-#### Dispatchers.Default
+### cancel
 
-> 使用后台共享线程池，适用于 CPU 密集型任务
+    通过 Job 尝试取消一个协程，也可以说是取消一个协程对应的 Job ，因为通过 launch 启动一个协程时返回的是一个 Job ； cancel 无法直接取消正在执行中的代码，需要通过 isActive 显示的检查取消状态；对于 kotlinx.coroutines 中的挂起函数，都是可以被取消的，并在取消时抛出 CancellationException ，因此也可以在代码中定期调用挂起函数检测取消状态，如 yield 。
 
-#### Dispatchers.IO
+### join
 
-> 使用按需创建的线程的共享线程池，适用于 IO 密集型任务
+    等待协程结束，也可以说是等待 Job 结束，因为通过 launch 启动一个协程时返回的是一个 Job 。
 
-#### Dispatchers.Main
+### cancelAndJoin
 
-> 在 UI 线程执行
+    等于 Job.cancel+Job.join 。
 
-### [ThrealLocal 类]([https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E6%95%B0%E6%8D%AE](https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#线程局部数据))
+### 备注
 
-> 每个线程/协程只能从中取到自己设置的值，并且挂起后该设置失效
+    通常使用 `try{...} finally{...}` 或者 Kotlin 中的 use 函数来处理取消时抛出的异常，在 finally 中作后续处理。
 
-### Flow 类
+## Deferred
 
-#### flow、asFlow、flowOf
+    继承于 Job
 
-> 构建方法
+### await
 
-map、filter、transform、take
+    阻塞等待 Job 执行完毕，返回执行结果
 
-### [Kotlin Debug](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
+## [ThrealLocal 类]([https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E6%95%B0%E6%8D%AE](https://www.kotlincn.net/docs/reference/coroutines/coroutine-context-and-dispatchers.html#线程局部数据))
 
-> testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.3.3'
+    每个线程/协程只能从中取到自己设置的值，并且挂起后该设置失效
 
+## Flow
+
+    与 Sequence 类似，可以用于协程
+
+## Channel
+
+    与 BlockingQueue 类似，用于异步流之间传递数据
+
+## [Kotlin Debug](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
+
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.3.3'
