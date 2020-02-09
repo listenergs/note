@@ -102,7 +102,17 @@
 
 ## Channel
 
-    与 BlockingQueue 类似，用于异步流之间传递数据
+    与 BlockingQueue 类似，用于异步流之间传递数据。
+
+### 创建一个 Channel
+
+1. 使用 Channel() 方法生成，需要手动 close 。
+2. 使用 CoroutineScope.produce 方法生成，不需要手动关闭。
+
+### 接收数据
+
+1. 通过 receive 方法依次接收数据。
+2. 使用 for(i in channel) 迭代数据。
 
 ## [Kotlin Debug](https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug)
 
