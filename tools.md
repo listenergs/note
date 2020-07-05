@@ -19,7 +19,7 @@ Android 7.0以前版本, 只能用旧签名方案 V1 scheme (JAR signing)；从 
 1. 生成密钥对
 
     ``` shell
-     keytool -genkeypair -keystore 密钥库名.jks -alias 密钥别名 -validity 天数 -keyalg RSA -storetype jks
+    keytool -genkeypair -keystore 密钥库名.jks -alias 密钥别名 -validity 天数 -keyalg RSA -storetype jks
     参数:
         -genkeypair    生成一条密钥对(由私钥和公钥组成)
         -keystore           密钥库名字以及存储位置(默认当前目录)
@@ -45,24 +45,32 @@ Android 7.0以前版本, 只能用旧签名方案 V1 scheme (JAR signing)；从 
 
         ```shell
         jarsigner -keystore 密钥库 -signedjar 签名后.apk 待签名.apk 密钥别名
-
         TIPS：只支持 API 4.2 以上
         ```
 
         ``` shell
-         jarsigner -keystore 密钥库 -digestalg SHA1 -sigalg SHA1withRSA  -signedjar signed.apk unsigned.apk 密钥别名
-
-         TIPS：兼容 API 4.2 以前
+        jarsigner -keystore 密钥库 -digestalg SHA1 -sigalg SHA1withRSA  -signedjar signed.apk unsigned.apk 密钥别名
+        TIPS：兼容 API 4.2 以前
         ```
 
-   2. apksigner （默认同时使用 v1、v2）
+   1. apksigner （默认同时使用 v1、v2）
 
-      ```shell
-      apksigner sign --ks 密钥库 --ks-key-alias 密钥别名 -in unsigned.apk  --out signed.apk
-      ```
+        ```shell
+        apksigner sign --ks 密钥库 --ks-key-alias 密钥别名 -in unsigned.apk  --out signed.apk
+        ```
 
 4. 签名验证
-   1. 
+   1. keytool （只支持 v1 签名）
+
+        ```shell
+            keytool -printcert -jarfile signed.apk
+        ```
+
+   2. apksigner （支持 v1、v2）
+
+        ```shell
+            apksigner verify -v --print-certs signed.apk
+        ```
 
 ## [APKTOOL](https://ibotpeaches.github.io/Apktool/)
 
